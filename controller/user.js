@@ -6,6 +6,9 @@ const utc = require("dayjs/plugin/utc")
 const {Op} = require("sequelize")
 dayjs.extend(utc)
 dayjs.extend(timezone)
+const AMQP = require("../service/amqp.service")
+
+const amqp = new AMQP()
 
 module.exports = {
     delete: (req, res) => {
@@ -40,9 +43,9 @@ module.exports = {
             }
         })
         users.forEach(user => {
-            if(dayjs.tz(new Date(), user.location).hour() === 21) {
+            // if(dayjs.tz(new Date(), user.location).hour() === 21) {
             amqp.publish("mail.sendbirthday", {"message":`Hey, ${user.firstName + " " + user.lastName} it's your birthday`, id: user.id, email: user.email})
-            }
+            // }
         })
     }
 }

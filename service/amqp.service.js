@@ -6,7 +6,7 @@ module.exports = class AmqpService {
     channel = null
 
     async connect() {
-        this.connection = await amqp.connect("amqp://localhost:5672")
+        this.connection = await amqp.connect(process.env.AMQP_URL)
         const channel = await this.connection.createChannel();
         await channel.assertExchange("assesment", 'direct', { durable: false });
         this.connection.on('error', err => {
